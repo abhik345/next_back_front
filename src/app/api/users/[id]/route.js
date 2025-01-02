@@ -1,9 +1,9 @@
 import db from "@/models/index.js";
 import bcrypt from "bcrypt";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const foundUser = await db.user.findByPk(id, {
@@ -31,8 +31,8 @@ export async function GET(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
-  const { id } = params;
-  const body = await req.json();
+  const { id } = await params;
+  const body = await req.json(); 
   const { username, email, password } = body;
 
   try {
@@ -76,12 +76,14 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  const { id } = params;
+  const { id } = await params;
+  console.log(`Delete request received for user ID: ${id}`);
 
   try {
     const existingUser = await db.user.findByPk(id);
 
     if (!existingUser) {
+      console.log("User not found");
       return NextResponse.json(
         { status: 404, message: "User not found" },
         { status: 404 }
@@ -89,18 +91,21 @@ export async function DELETE(req, { params }) {
     }
 
     await existingUser.destroy();
+    console.log("User deleted successfully");
 
     return NextResponse.json({
       status: 200,
       message: "User deleted",
     });
   } catch (error) {
+    console.error("Error deleting user:", error);
     return NextResponse.json(
       { status: 500, message: error.message },
       { status: 500 }
     );
   }
 }
+
 
 export function OPTIONS() {
   return NextResponse.json(null, { status: 204 });

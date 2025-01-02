@@ -34,6 +34,8 @@ export default function UserCreateForm() {
     setMessage("");
     setError("");
 
+    console.log(id)
+
     try {
       await axios.delete(`/api/users/${id}`);
       setUserData((prev) => prev.filter((user) => user.id !== id));

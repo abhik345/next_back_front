@@ -9,6 +9,20 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [...compat.extends("next/core-web-vitals")];
+const eslintConfig = {
+  extends: [
+    ...compat.extends("next/core-web-vitals"),
+    "eslint:recommended", // Add recommended ESLint settings
+  ],
+  rules: {
+    // Custom ESLint rules can be added here
+    "no-console": "warn", // Example: warning on console logs in production
+  },
+  settings: {
+    react: {
+      version: "detect", // Automatically detect the react version you're using
+    },
+  },
+};
 
 export default eslintConfig;

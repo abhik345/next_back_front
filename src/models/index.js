@@ -10,7 +10,7 @@ const sequelize = new Sequelize({
   username: dbConfig.username,
   password: dbConfig.password,
   database: dbConfig.database,
-  dialect: dbConfig.dialect,
+  dialect: "mysql",
   port: dbConfig.port,
   dialectModule: require("mysql2"),
   logging: false, 
