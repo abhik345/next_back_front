@@ -1,0 +1,49 @@
+/blog-app
+├── /src                    # Source code directory
+│   ├── /app                # Main application directory
+│   │   ├── /api            # API routes for backend
+│   │   │   ├── /posts      # Routes for blog posts
+│   │   │   │   ├── index.js     # Fetch all blog posts
+│   │   │   │   ├── [id].js      # Fetch, update, or delete a single blog post
+│   │   │   └── /auth       # Routes for authentication
+│   │   │       ├── login.js     # Login API
+│   │   │       ├── register.js  # Register API
+│   │   │       ├── logout.js    # Logout API
+│   │   └── /components     # Reusable frontend components
+│   │       ├── Header.js        # Header component
+│   │       ├── Footer.js        # Footer component
+│   │       ├── BlogCard.js      # Component for displaying a blog post
+│   │       ├── Pagination.js    # Pagination component
+│   │       └── Form.js          # Reusable form component for blog CRUD
+│   ├── /models              # Sequelize models
+│   │   ├── User.js          # User model
+│   │   ├── Post.js          # Blog post model
+│   │   └── index.js         # Sequelize initialization and relationships
+│   ├── /pages               # Next.js pages (frontend)
+│   │   ├── index.js         # Home page (list blog posts)
+│   │   ├── create.js        # Page for creating a new blog post
+│   │   ├── edit/[id].js     # Page for editing a blog post
+│   │   ├── post/[id].js     # Single blog post details
+│   │   └── auth             # Authentication-related pages
+│   │       ├── login.js         # Login page
+│   │       ├── register.js      # Register page
+│   ├── /public              # Static assets
+│   │   ├── /images          # Image assets (e.g., logos, placeholders)
+│   │   └── favicon.ico      # Favicon
+│   ├── /styles              # Styling (CSS or SCSS)
+│   │   ├── globals.css      # Global styles
+│   │   ├── Header.module.css    # Module CSS for Header component
+│   │   ├── BlogCard.module.css  # Module CSS for BlogCard component
+│   ├── /utils               # Utility functions and helpers
+│   │   ├── api.js           # Helper for API requests
+│   │   ├── auth.js          # Authentication helpers
+│   │   ├── constants.js     # App-wide constants
+│   ├── /migrations          # Sequelize migrations
+│   ├── /seeders             # Sequelize seeders
+├── .env.local               # Environment variables (e.g., DB credentials)
+├── .eslintrc.js             # ESLint configuration
+├── .prettierrc              # Prettier configuration
+├── next.config.js           # Next.js configuration
+├── package.json             # Dependencies and scripts
+├── README.md                # Project documentation
+└── sequelize.config.js      # Sequelize configuration

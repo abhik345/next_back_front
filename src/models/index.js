@@ -1,39 +1,49 @@
 import { Sequelize, DataTypes } from "sequelize";
-import config from "../config/config.js"; // Make sure to add the .js extension
+import config from "../config/config.js";
+import User from "./user.js";
 
 const env = process.env.NODE_ENV || "development";
 const dbConfig = config[env];
 
-const sequelize = new Sequelize(
-    dbConfig.database,
-    dbConfig.username,
-    dbConfig.password,
-    {
-        host: dbConfig.host,
-        port: dbConfig.port,
-        dialect: dbConfig.dialect,
-        logging: false,
-    }
-);
-
-const db = {};
-
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
-
-// Use import to load the model
-import User from "./user.js"; // Make sure to add the .js extension
-
-db.user = User(sequelize, DataTypes);
-
-db.sequelize.sync({ force: false }).then(() => {
-    console.log("Drop and re-sync db.");
+const sequelize = new Sequelize({
+  host: dbConfig.host,
+  username: dbConfig.username,
+  password: dbConfig.password,
+  database: dbConfig.database,
+  dialect: dbConfig.dialect,
+  port: dbConfig.port,
+  dialectModule: require("mysql2"),
+  logging: false, 
 });
+
+const db = {
+  Sequelize,
+  sequelize,
+  user: User(sequelize, DataTypes), 
+};
+
+
+if (env === "development") {
+  sequelize
+    .sync({ force: false })
+    .then(() => console.log("Database synchronized successfully."))
+    .catch((error) => console.error("Error syncing database:", error));
+}
 
 Object.keys(db).forEach((modelName) => {
-    if (db[modelName].associate) {
-        db[modelName].associate(db);
-    }
+  if (db[modelName]?.associate) {
+    db[modelName].associate(db);
+  }
 });
+
+
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connection established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+})();
 
 export default db;
