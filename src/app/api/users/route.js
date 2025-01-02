@@ -17,7 +17,7 @@ export async function POST(req) {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    const newUser = await db.user.create({
+    const newUser = await db.User.create({
       username,
       email,
       password: hashedPassword,
@@ -39,7 +39,7 @@ export async function POST(req) {
 
 export async function GET() {
   try {
-    const users = await db.user.findAll();
+    const users = await db.User.findAll();
 
     if (!users.length) {
       return NextResponse.json(

@@ -77,7 +77,6 @@ export async function PUT(req, { params }) {
 
 export async function DELETE(req, { params }) {
   const { id } = await params;
-  console.log(`Delete request received for user ID: ${id}`);
 
   try {
     const existingUser = await db.user.findByPk(id);

@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes } from "sequelize";
 import config from "../config/config.js";
 import User from "./user.js";
+import Post from "./post.js";
 
 const env = process.env.NODE_ENV || "development";
 const dbConfig = config[env];
@@ -19,7 +20,8 @@ const sequelize = new Sequelize({
 const db = {
   Sequelize,
   sequelize,
-  user: User(sequelize, DataTypes), 
+  User: User(sequelize, DataTypes),
+  Post: Post(sequelize, DataTypes),
 };
 
 
