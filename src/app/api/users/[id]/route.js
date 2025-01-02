@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
   const { id } = await params;
 
   try {
-    const foundUser = await db.user.findByPk(id, {
+    const foundUser = await db.User.findByPk(id, {
       attributes: { exclude: ["password", "createdAt", "updatedAt"] },
     });
 
@@ -36,7 +36,7 @@ export async function PUT(req, { params }) {
   const { username, email, password } = body;
 
   try {
-    const existingUser = await db.user.findByPk(id, {
+    const existingUser = await db.User.findByPk(id, {
       attributes: { exclude: ["createdAt", "updatedAt"] },
     });
 
@@ -79,7 +79,7 @@ export async function DELETE(req, { params }) {
   const { id } = await params;
 
   try {
-    const existingUser = await db.user.findByPk(id);
+    const existingUser = await db.User.findByPk(id);
 
     if (!existingUser) {
       console.log("User not found");
