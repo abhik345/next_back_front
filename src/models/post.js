@@ -1,5 +1,5 @@
 const Post = (sequelize, DataTypes) => {
-  return sequelize.define(
+  const Post = sequelize.define(
     "Post",
     {
       id: {
@@ -34,13 +34,16 @@ const Post = (sequelize, DataTypes) => {
       },
     },
     {
+      tableName: "Posts",
       timestamps: true,
     }
   );
-};
 
-Post.associate = (models) => {
-  Post.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+  Post.associate = (models) => {
+    Post.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+  };
+
+  return Post;
 };
 
 export default Post;

@@ -115,29 +115,35 @@ export async function POST(req) {
  */
 export async function GET() {
     try {
-        const posts = await db.Post.findAll({
+        const allPosts = await db.Post.findAll({
             attributes: { exclude: ["createdAt", "updatedAt"] },
-            include: [{ model: db.User, as: "user", attributes: ["id", "username"] }], // Ensure `as: "user"`
+            include: [
+                { 
+                    model: db.User, 
+                    as: "user",   // Ensure this alias matches the 'as' in the association
+                }
+            ], 
         });
-
-        if (!posts.length) {
+        
+        if (!allPosts.length) {
             return NextResponse.json({
                 status: 404,
-                message: "Posts not found",
+                message: "allPosts not found",
             });
         }
-
+        
         return NextResponse.json({
             status: 200,
-            message: "Posts found",
-            data: posts,
+            message: "allPosts found",
+            data: allPosts,
         });
     } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching allPosts:", error);
         return NextResponse.json({
             status: 500,
             message: error.message,
         });
     }
 }
+
 
