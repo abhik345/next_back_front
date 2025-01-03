@@ -50,3 +50,33 @@ export async function GET(req,{params}) {
         })
     }
 }
+
+export async function DELETE(req,{params}){
+    const {slug} = await params;
+
+    try {
+        const existingPost = await db.Post.findOne({
+            where : {
+                slug
+            }
+        })
+        if(!existingPost){
+            return NextResponse.json({
+                status: 404,
+                message: "Post not found"
+            }, {
+                status: 404
+            })
+        }
+        await existingPost.destroy();
+        return NextResponse.json({
+            status: 200,
+            message: "Post deleted"
+        })
+    } catch (error) {
+        return NextResponse.json({
+            status: 500,
+            message: error.message
+        })
+    }
+}
