@@ -25,6 +25,10 @@ const User = (sequelize, DataTypes) => {
       }
     );
   };
+
+  User.associate = (models) => {
+    User.hasMany(models.Post, { foreignKey: "userId", as: "user" });
+  }
  
   export default User;
   

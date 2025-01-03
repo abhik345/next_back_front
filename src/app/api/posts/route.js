@@ -1,6 +1,6 @@
 import db from "../../../models/index.js";
 import { NextResponse } from "next/server";
-import { processBase64Image } from "../../../middlewares/processBase64Image.js"; // Adjust path
+import { processBase64Image } from "../../../middlewares/processBase64Image.js";
 
 const generateSlug = (title) => {
     return title
@@ -12,6 +12,39 @@ const generateSlug = (title) => {
         .replace(/-+$/, '');       
 };
 
+/**
+ * @api {post} /posts Create a new blog post
+ * @apiName CreatePost
+ * @apiGroup Posts
+ * @apiPermission User
+ *
+ * @apiParam {String} title The title of the post
+ * @apiParam {String} description The description of the post
+ * @apiParam {String} image_url The image URL for the post (base64 encoded)
+ * @apiParam {Number} userId The ID of the user who created the post
+ *
+ * @apiSuccess {Object} data The created post object
+ * @apiSuccess {Number} data.id The ID of the post
+ * @apiSuccess {String} data.title The title of the post
+ * @apiSuccess {String} data.description The description of the post
+ * @apiSuccess {String} data.image_url The image URL of the post
+ * @apiSuccess {Number} data.userId The ID of the user who created the post
+ * @apiSuccess {String} data.slug The slug for the post
+ *
+ * @apiError {String} message Please fill all fields
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "message": "Please fill all fields"
+ *     }
+ *
+ * @apiError {String} message Post creation failed
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "message": "Post creation failed"
+ *     }
+ */
 export async function POST(req) {
     try {
         const body = await req.json();
@@ -44,3 +77,67 @@ export async function POST(req) {
         }, { status: 500 });
     }
 }
+
+
+/**
+ * @api {get} /api/posts Fetch all blog posts
+ * @apiName GetPosts
+ * @apiGroup Posts
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 200,
+ *       "message": "Posts found",
+ *       "data": [
+ *         {
+ *           "id": 1,
+ *           "title": "Post 1",
+ *           "description": "This is a test post",
+ *           "image_url": "https://example.com/image.jpg",
+ *           "userId": 1,
+ *           "slug": "post-1"
+ *         },
+ *         {
+ *           "id": 2,
+ *           "title": "Post 2",
+ *           "description": "This is another test post",
+ *           "image_url": "https://example.com/image2.jpg",
+ *           "userId": 1,
+ *           "slug": "post-2"
+ *         }
+ *       ]
+ *     }
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "message": "Post fetching failed"
+ *     }
+ */
+export async function GET() {
+    try {
+        const posts = await db.Post.findAll({
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            include: [{ model: db.User, as: "user", attributes: ["id", "username"] }], // Ensure `as: "user"`
+        });
+
+        if (!posts.length) {
+            return NextResponse.json({
+                status: 404,
+                message: "Posts not found",
+            });
+        }
+
+        return NextResponse.json({
+            status: 200,
+            message: "Posts found",
+            data: posts,
+        });
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        return NextResponse.json({
+            status: 500,
+            message: error.message,
+        });
+    }
+}
+
