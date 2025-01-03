@@ -1,7 +1,6 @@
 import db from "../../../models/index.js";
 import { NextResponse } from "next/server";
-import base64ToImage from "../../../middlewares/base64ToImage.js"; 
-
+import { processBase64Image } from "../../../middlewares/processBase64Image.js"; // Adjust path
 
 const generateSlug = (title) => {
     return title
@@ -16,38 +15,22 @@ const generateSlug = (title) => {
 export async function POST(req) {
     try {
         const body = await req.json();
-        const mockRes = {
-            status: (code) => ({ json: (data) => NextResponse.json(data, { status: code }) } ),
-        };
-
-        // Process the image using the middleware
-        await new Promise((resolve, reject) => {
-            base64ToImage(req, mockRes, (err) => {
-                if (err) reject(err);
-                resolve();
-            });
-        });
 
         const { title, description, image_url, userId } = body;
-
-        // Check if all required fields are provided
         if (!title || !description || !image_url || !userId) {
             return NextResponse.json(
                 { message: "Please fill all fields" },
                 { status: 400 }
             );
         }
-
-        // Generate the slug from the title
+        const processedImagePath = processBase64Image(image_url);
         const slug = generateSlug(title);
-
-        // Create a new post with the image URL stored in the database
         const newPost = await db.Post.create({
             title,
             description,
-            image_url,  // This is now the path to the uploaded image, not base64 string
+            image_url: processedImagePath,
             userId,
-            slug,  // Store the generated slug
+            slug,
         });
 
         return NextResponse.json({
