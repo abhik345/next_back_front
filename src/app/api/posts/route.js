@@ -116,13 +116,14 @@ export async function POST(req) {
 export async function GET() {
     try {
         const allPosts = await db.Post.findAll({
-            attributes: { exclude: ["createdAt", "updatedAt"] },
-            include: [
-                { 
-                    model: db.User, 
-                    as: "user",   // Ensure this alias matches the 'as' in the association
-                }
-            ], 
+            attributes: ["id", "title", "description", "image_url", "slug"],
+                include: [
+                    {
+                        model: db.User,
+                        as: "user",
+                        attributes: ["id", "username"]
+                    }
+                ] 
         });
         
         if (!allPosts.length) {
